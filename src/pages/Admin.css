@@ -1,0 +1,105 @@
+/* Admin.css */
+
+/* Full-page container matching your site's gradient background */
+.admin-page {
+    min-height: 100vh;
+    padding: 6rem 1rem;
+    max-width: 1160px;
+    margin: 0 auto;
+    margin-top: 5.5rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(14, 48, 87, 0.9), rgba(25, 78, 140, 0.85));
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  
+  
+  .admin-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .admin-nav {
+    margin-bottom: 3rem;
+    display: flex;
+    gap: 2rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .admin-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .admin-link:hover {
+    transform: scale(1.1);
+    color: #1a73e8;
+  }
+  
+  .admin-content {
+    margin: 0 auto;
+    margin-top: 2rem;
+    width: 0%;
+    max-width: 1120px;
+  }
+  
+  .admin-content form {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 1.5rem;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+  }
+  
+  .admin-content label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .admin-content input,
+  .admin-content textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 1rem;
+  }
+  
+  .admin-content button {
+    background: linear-gradient(90deg, #1a73e8, #4285f4);
+    color: white;
+    padding: 0.75rem 1.2rem;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .admin-content button:hover {
+    background: linear-gradient(90deg, #053573, #357ae8);
+    transform: scale(1.05);
+  }
+  
+  .error {
+    color: #ffcccc;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 768px) {
+    .admin-nav {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+  

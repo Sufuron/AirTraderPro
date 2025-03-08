@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+
+:root {
+  font-family: "Poppins", "Avenir", Helvetica, Arial, sans-serif; /* Modern, clean font */
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+
+  /* Beautiful blue gradient with transparency */
+  background: linear-gradient(135deg, #14447a, #1645aa);
+
+  background-attachment: fixed; /* Prevents scrolling background */
+  background-size: cover;
+}
+
+
+a {
+  font-weight: 500;
+  color: #ffffff;
+  text-decoration: inherit;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #a0c4ff; /* Light blue hover effect */
+}
+
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  background: linear-gradient(135deg, #0a1c4f, #0536bb); /* Modern button gradient */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}

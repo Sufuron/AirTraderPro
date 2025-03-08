@@ -1,0 +1,146 @@
+/* Header.css */
+.header {
+  position: relative;
+  width: 100%;
+  height: 65vh; /* Adjust height */
+}
+
+.header-image {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  width: 100vw; /* Ensures the image covers full width */
+  max-width: 1200px; /* Limits the image width */
+  object-fit: cover;
+  margin: -1rem auto; /* Centers the image */
+  position: absolute;
+  left: 50%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.3) 0%,  /* Slight darkening at the top */
+        rgba(0, 0, 0, 0.5) 50%, /* Middle blending */
+        rgba(14, 48, 87, 0.9) 100% /* Fully blending into background */
+    );
+}
+
+
+.header-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: -0.5rem;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.956);
+}
+
+/* Responsive Font Sizes */
+.header-title {
+  font-size: clamp(2rem, 5vw, 4rem); /* Scales between 2rem and 4rem */
+  font-weight: bold;
+  margin: 0;
+}
+
+.header-subtitle {
+  font-size: clamp(1rem, 3vw, 2rem); /* Scales between 1rem and 2rem */
+  margin: 0;
+}
+
+/* Ensure fonts adjust for smaller screens */
+
+@media (max-width: 4500px) {
+  .header {
+    height: 50vh;
+    margin-bottom: 400px;
+  }
+
+  .header-title {
+    font-size: 2.2rem; /* Smaller title on mobile */
+  }
+
+  .header-subtitle {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 1250px) {
+  .header {
+    height: 50vh;
+    margin-bottom: 325px;
+  }
+
+  .header-title {
+    font-size: 2.2rem; /* Smaller title on mobile */
+  }
+
+  .header-subtitle {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 1000px) {
+  .header {
+    height: 50vh;
+    margin-bottom: 265px;
+  }
+
+  .header-title {
+    font-size: 2.2rem; /* Smaller title on mobile */
+  }
+
+  .header-subtitle {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    height: 35vh;
+    margin-bottom: 220px;
+  }
+
+  .header-title {
+    font-size: 1.7rem; /* Smaller title on mobile */
+  }
+
+  .header-subtitle {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 555px) {
+  .header {
+    height: 37vh;
+    margin-bottom: 50px;
+  }
+
+  .header-title {
+    font-size: 1.4rem; /* Smaller title on mobile */
+  }
+
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+}
+
+
+@media (max-width: 425px) {
+  .header {
+    height: 37vh;
+    margin-bottom: -20px;
+  }
+
+  .header-title {
+    font-size: 1.4rem; /* Smaller title on mobile */
+  }
+
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+}
+

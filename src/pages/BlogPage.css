@@ -1,0 +1,56 @@
+/* Blog Page Container */
+.blog-page {
+  background: linear-gradient(135deg, rgba(14, 48, 87, 0.9), rgba(20, 64, 114, 0.85));
+  min-height: 100vh;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.683);
+  border-radius: 10px;
+  margin: 6rem auto 0; /* 6rem top, auto left/right, 0 bottom */
+  padding: 4rem 1rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1160px;
+}
+
+
+  h2 {
+    text-align: center;
+    margin-top: -1rem;
+  }
+  
+  /* Blog Title */
+  .blog-page-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Blog Cards Grid */
+  .blog-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1120px;
+  }
+
+  .read-more-button {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    background-color: #1a73e8;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .read-more-button:hover {
+    background-color: #07003d;
+    color: white;
+    transform: scale(1.05);
+  }
+  
+  
+  /* You can add additional styles to override BlogCard.css if needed */  

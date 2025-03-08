@@ -1,0 +1,8 @@
+/* InventoryCard.css */
+.summary-card-price {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+    color: #ffd700; /* Gold color for emphasis, or choose a color that fits your design */
+  }
+  

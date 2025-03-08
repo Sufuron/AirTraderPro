@@ -1,0 +1,242 @@
+/* Full-page container with the website's blue gradient background */
+.inventory-page {
+    min-height: 100vh;
+    padding: 4rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .inventory-container {
+    max-width: 1120px;
+    width: 100%;
+    margin: 1rem auto;
+    padding: 30px;
+    background: linear-gradient(135deg, rgba(14, 48, 87, 0.9), rgba(25, 78, 140, 0.85));
+    border-radius: 10px;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .inventory-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+  }
+  
+  .inventory-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+  }
+  
+  /* Inventory Summary Card */
+  .inventory-summary-card {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .inventory-summary-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .summary-card-image-wrapper {
+    height: 150px;
+    overflow: hidden;
+  }
+  
+  .summary-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .summary-card-content {
+    padding: 1rem;
+  }
+  
+  .summary-card-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .summary-card-description {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+  
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-card {
+    background: #fff;
+    color: #333;
+    border-radius: 10px;
+    max-width: 900px;
+    width: 90%;
+    padding: 20px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+.modal-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.2rem;
+}
+
+/* Close Button: remove absolute positioning so it's inside the header */
+.modal-close {
+  background: transparent;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #f20a0a;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.modal-close:hover {
+  color: rgb(255, 255, 255);
+  background-color: black;
+  transform: scale(1.10);
+}
+
+  /* Modal Top Section */
+  .modal-content-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .modal-content-left {
+    flex: 1 1 400px;
+    min-width: 300px;
+  }
+  
+  .modal-content-right {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .modal-image {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  /* Titles and Price/Year */
+  .plane-title {
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .plane-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    color: #1a73e8;
+  }
+  
+  .plane-year {
+    font-size: 1rem;
+    color: #474747;
+  }
+  
+  /* Contact Us Button */
+  .contact-us-button {
+    display: inline-block;
+    text-decoration: none;
+    background: linear-gradient(90deg, #1a73e8, #4285f4);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+    max-width: 200px;
+  }
+  
+  .contact-us-button:hover {
+    background: linear-gradient(135deg, #053573, #0d4fb9);
+    transform: scale(1.05);
+    color: white;
+  }
+  
+  /* Modal Details */
+  .modal-details {
+    margin-top: 1rem;
+  }
+  
+  /* Separated Sections for Plane Details */
+  .plane-section {
+    background: #f9f9f9;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .plane-section h3 {
+    margin-bottom: 0.75rem;
+    font-size: 1.3rem;
+    color: #1a73e8;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.25rem;
+  }
+  
+  .plane-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .plane-section li {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .modal-content-top {
+      flex-direction: column;
+    }
+
+    .modal-image {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .modal-close {
+      background: transparent;
+      font-size: 1.5rem;
+      margin-top: 1rem;
+      cursor: pointer;
+      color: #f20a0a;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+    
+  }
+  

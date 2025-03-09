@@ -3,9 +3,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 1190px;
+    border-radius: 10px;
+    margin: 0 auto;
+    margin-top: 5rem;
     justify-content: center;
     height: 100vh;
-    background: linear-gradient(135deg, #0e3057, #1d58d7);
+    background: linear-gradient(135deg, #0e3057, #15419e);
     color: white;
   }
   
@@ -26,6 +30,8 @@
   }
   
   .login-page input {
+    background-color: rgba(255, 255, 255, 0.899);
+    color: rgb(42, 40, 40);
     padding: 10px;
     border: none;
     border-radius: 5px;

@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import FieldSection from '../../components/FieldSection';
 import sellAircraftText from '../../data/sellAircraftText';
 import './ManageInventory.css';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = Yup.object({
   aircraftType: Yup.string().required("El tipo de aeronave es obligatorio"),
@@ -42,19 +43,27 @@ const initialValues = {
 
 const ManageInventory = () => {
   const [selectedImages, setSelectedImages] = useState([]);
+  const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const formData = new FormData();
-
     formData.append("data", JSON.stringify(values));
+    selectedImages.forEach((image) => formData.append("images", image));
 
-    selectedImages.forEach((image) => {
-      formData.append("images", image);
-    });
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Acceso denegado. Por favor inicia sesión.");
+      navigate('/login');
+      return;
+    }
 
     try {
-      const response = await fetch('http://localhost:5000/api/planes', {
+      const response = await fetch('https://your-backend-service.up.railway.app/api/planes', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -74,12 +83,7 @@ const ManageInventory = () => {
   };
 
   const handleImageChange = (e) => {
-    const allFiles = Array.from(e.target.files);
-    let files = allFiles;
-    if (allFiles.length > 10) {
-      alert("Puedes subir un máximo de 10 archivos. Solo se utilizarán los primeros 10 archivos.");
-      files = allFiles.slice(0, 10);
-    }
+    let files = Array.from(e.target.files).slice(0, 10);
     setSelectedImages(files);
   };
 

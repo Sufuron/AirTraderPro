@@ -14,7 +14,7 @@ const Admin = () => {
     <div className="admin-page">
       <nav className="admin-nav">
         <Link to="/admin/blog" className="admin-link">Gestionar Blog</Link>
-        <Link to="/admin/admin" className="admin-link">Admin Profile</Link>
+        <Link to="/admin" className="admin-link">Admin Profile</Link>
         <Link to="/admin/inventory" className="admin-link">Gestionar Inventario</Link>
       </nav>
       <Routes>

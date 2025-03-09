@@ -20,7 +20,7 @@ const Login = () => {
 
     if (data.success) {
       localStorage.setItem("token", data.token);
-      navigate("/admin/inventory");
+      navigate("/admin");
     } else {
       setError("Credenciales incorrectas.");
     }

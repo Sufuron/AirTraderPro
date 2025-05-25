@@ -28,7 +28,7 @@ const Navbar = () => {
       <nav className="navbar">
         {/* Logo redirects to Home */}
         <Link to="/" className="logo" onClick={() => setIsOpen(false)}>
-        AirTraderPro
+        Aviación360
         </Link>
 
         {/* Mobile Menu Button */}

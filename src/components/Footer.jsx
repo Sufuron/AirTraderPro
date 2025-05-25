@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="footer-content">
           {/* Logo */}
           <div className="footer-logo">
-            <h2>Air Trader</h2>
+            <h2>Aviación360</h2>
           </div>
 
           {/* Footer Links */}
@@ -22,13 +22,13 @@ const Footer = () => {
           <div className="footer-socials">
             <a href="#" className="social-icon">📘</a> {/* Facebook */}
             <a href="#" className="social-icon">🐦</a> {/* Twitter */}
-            <a href="#" className="social-icon">📷</a> {/* Instagram */}
+            <a href="https://www.instagram.com/360aviacion/" className="social-icon">📷</a> {/* Instagram */}
           </div>
         </div>
 
         {/* Copyright */}
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} AirTraderPro. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} Aviación360.</p>
         </div>
       </footer>
     </div>

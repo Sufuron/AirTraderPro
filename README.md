@@ -39,6 +39,12 @@ cd .. && npm run dev
 
 The application will be accessible at `http://localhost:5173`.
 
+### Guía en español
+
+Si prefieres las instrucciones en español para configurar el backend y utilizar
+la página administrativa, consulta el archivo
+[`docs/backend_setup_es.md`](docs/backend_setup_es.md).
+
 Usage
 Browse Listings: Navigate to the "Inventory" section to view available aircraft.
 List an Aircraft: Go to the "Sell Aircraft" page, fill out the form with your aircraft's details, and submit.

@@ -1,0 +1,20 @@
+.blog-post {
+  background: linear-gradient(135deg, rgba(14, 48, 87, 0.9), rgba(20, 64, 114, 0.85));
+  min-height: 100vh;
+  padding: 4rem 1rem;
+  color: white;
+  max-width: 1160px;
+  margin: 6rem auto 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.683);
+  border-radius: 10px;
+}
+
+.blog-wrapper img {
+  max-width: 100%;
+  border-radius: 5px;
+  margin: 1rem 0;
+}
+
+.blog-content {
+  line-height: 1.6;
+}

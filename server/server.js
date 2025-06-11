@@ -22,6 +22,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// File paths for data storage
+const planesFile = path.join(__dirname, 'planes.json');
+const blogFile = path.join(__dirname, 'blog.json');
+
 // Admin credentials (replace with a secure database)
 const adminUser = { username: "admin", password: "password123" };
 
@@ -50,22 +54,64 @@ const verifyToken = (req, res, next) => {
 
 // ✅ **GET planes**
 app.get('/api/planes', (req, res) => {
-  const planes = JSON.parse(fs.readFileSync('planes.json', 'utf-8'));
+  const planes = JSON.parse(fs.readFileSync(planesFile, 'utf-8'));
   res.json(planes);
 });
 
 // ✅ **POST (Create Plane) (Protected Route)**
 app.post('/api/planes', verifyToken, upload.array('images', 10), (req, res) => {
-  const planes = JSON.parse(fs.readFileSync('planes.json', 'utf-8'));
+  const planes = JSON.parse(fs.readFileSync(planesFile, 'utf-8'));
   const planeData = JSON.parse(req.body.data);
 
   planeData.id = Date.now();
   planeData.images = req.files.map(file => `/uploads/${file.filename}`);
 
   planes.push(planeData);
-  fs.writeFileSync('planes.json', JSON.stringify(planes, null, 2));
+  fs.writeFileSync(planesFile, JSON.stringify(planes, null, 2));
 
   res.status(201).json(planeData);
+});
+
+// Get single plane by ID
+app.get('/api/planes/:id', (req, res) => {
+  const planes = JSON.parse(fs.readFileSync(planesFile, 'utf-8'));
+  const plane = planes.find(p => p.id == req.params.id);
+  if (!plane) {
+    return res.status(404).json({ message: 'Plane not found' });
+  }
+  res.json(plane);
+});
+
+// ✅ **GET blog posts**
+app.get('/api/blog', (req, res) => {
+  const posts = JSON.parse(fs.readFileSync(blogFile, 'utf-8'));
+  res.json(posts);
+});
+
+// Get single blog post by ID
+app.get('/api/blog/:id', (req, res) => {
+  const posts = JSON.parse(fs.readFileSync(blogFile, 'utf-8'));
+  const post = posts.find(p => p.id == req.params.id);
+  if (!post) {
+    return res.status(404).json({ message: 'Post not found' });
+  }
+  res.json(post);
+});
+
+// ✅ **POST (Create Blog Post) (Protected Route)**
+app.post('/api/blog', verifyToken, upload.single('image'), (req, res) => {
+  const posts = JSON.parse(fs.readFileSync(blogFile, 'utf-8'));
+  const postData = JSON.parse(req.body.data);
+
+  postData.id = Date.now();
+  if (req.file) {
+    postData.image = `/uploads/${req.file.filename}`;
+  }
+
+  posts.unshift(postData);
+  fs.writeFileSync(blogFile, JSON.stringify(posts, null, 2));
+
+  res.status(201).json(postData);
 });
 
 // ✅ **Deploy Port Config**

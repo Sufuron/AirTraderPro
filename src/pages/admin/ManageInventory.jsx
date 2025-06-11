@@ -59,7 +59,7 @@ const ManageInventory = () => {
     }
 
     try {
-      const response = await fetch('https://your-backend-service.up.railway.app/api/planes', {
+      const response = await fetch('http://localhost:5000/api/planes', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

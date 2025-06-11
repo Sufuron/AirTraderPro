@@ -18,48 +18,44 @@ Express: Web application framework for Node.js.
 Installation
 To run this project locally, follow these steps:
 
-Clone the repository:
+Clone the repository and install dependencies:
 
-bash
-Copy
-Edit
+```bash
 git clone https://github.com/Sufuron/AirTraderPro.git
-cd airtraderpro
-Install backend dependencies:
-
-bash
-Copy
-Edit
+cd AirTraderPro
 npm install
-Navigate to the frontend directory and install dependencies:
+cd server && npm install
+```
 
-bash
-Copy
-Edit
-cd client
-npm install
-Start the development servers:
+Start the development servers in separate terminals:
 
-Backend:
+```bash
+# Backend API
+cd server && npm start
 
-bash
-Copy
-Edit
-npm start
-Frontend:
+# Frontend
+cd .. && npm run dev
+```
 
-bash
-Copy
-Edit
-cd client
-npm start
-The application will be accessible at http://localhost:3000.
+The application will be accessible at `http://localhost:5173`.
 
 Usage
 Browse Listings: Navigate to the "Inventory" section to view available aircraft.
 List an Aircraft: Go to the "Sell Aircraft" page, fill out the form with your aircraft's details, and submit.
 Read Blog Posts: Visit the "Blog" section for the latest articles.
 Contact Us: Use the "Contact" form for any inquiries or feedback.
+
+### API Endpoints
+
+The backend exposes the following routes on `http://localhost:5000`:
+
+- `POST /api/login` – obtain a JWT token for admin tasks
+- `GET /api/planes` – list planes
+- `POST /api/planes` – create a plane (protected)
+- `GET /api/planes/:id` – fetch a single plane
+- `GET /api/blog` – list blog posts
+- `POST /api/blog` – create a blog post (protected)
+- `GET /api/blog/:id` – fetch a single blog post
 Contributing
 We welcome contributions from the community. To contribute:
 

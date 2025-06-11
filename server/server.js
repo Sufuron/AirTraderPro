@@ -1,9 +1,21 @@
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
-const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const admin = require('firebase-admin');
+
+// Initialize Firebase Admin using a service account provided via environment variable
+const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT ?
+  JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT) : null;
+if (!serviceAccount) {
+  console.error('FIREBASE_SERVICE_ACCOUNT environment variable not set');
+  process.exit(1);
+}
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+const db = admin.firestore();
 
 const app = express();
 app.use(cors());
@@ -22,9 +34,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// File paths for data storage
-const planesFile = path.join(__dirname, 'planes.json');
-const blogFile = path.join(__dirname, 'blog.json');
+// Firestore collections
+const planesCollection = db.collection('planes');
+const blogCollection = db.collection('blog');
 
 // Admin credentials (replace with a secure database)
 const adminUser = { username: "admin", password: "password123" };
@@ -53,65 +65,88 @@ const verifyToken = (req, res, next) => {
 };
 
 // ✅ **GET planes**
-app.get('/api/planes', (req, res) => {
-  const planes = JSON.parse(fs.readFileSync(planesFile, 'utf-8'));
-  res.json(planes);
+// Fetch all planes from Firestore
+app.get('/api/planes', async (req, res) => {
+  try {
+    const snapshot = await planesCollection.get();
+    const planes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(planes);
+  } catch (error) {
+    console.error('Error fetching planes', error);
+    res.status(500).json({ message: 'Error fetching planes' });
+  }
 });
 
 // ✅ **POST (Create Plane) (Protected Route)**
-app.post('/api/planes', verifyToken, upload.array('images', 10), (req, res) => {
-  const planes = JSON.parse(fs.readFileSync(planesFile, 'utf-8'));
-  const planeData = JSON.parse(req.body.data);
+app.post('/api/planes', verifyToken, upload.array('images', 10), async (req, res) => {
+  try {
+    const planeData = JSON.parse(req.body.data);
+    planeData.images = req.files.map(file => `/uploads/${file.filename}`);
 
-  planeData.id = Date.now();
-  planeData.images = req.files.map(file => `/uploads/${file.filename}`);
+    const docRef = await planesCollection.add(planeData);
+    await docRef.update({ id: docRef.id });
 
-  planes.push(planeData);
-  fs.writeFileSync(planesFile, JSON.stringify(planes, null, 2));
-
-  res.status(201).json(planeData);
+    res.status(201).json({ id: docRef.id, ...planeData });
+  } catch (error) {
+    console.error('Error creating plane', error);
+    res.status(500).json({ message: 'Error creating plane' });
+  }
 });
 
 // Get single plane by ID
-app.get('/api/planes/:id', (req, res) => {
-  const planes = JSON.parse(fs.readFileSync(planesFile, 'utf-8'));
-  const plane = planes.find(p => p.id == req.params.id);
-  if (!plane) {
-    return res.status(404).json({ message: 'Plane not found' });
+app.get('/api/planes/:id', async (req, res) => {
+  try {
+    const doc = await planesCollection.doc(req.params.id).get();
+    if (!doc.exists) {
+      return res.status(404).json({ message: 'Plane not found' });
+    }
+    res.json({ id: doc.id, ...doc.data() });
+  } catch (error) {
+    console.error('Error fetching plane', error);
+    res.status(500).json({ message: 'Error fetching plane' });
   }
-  res.json(plane);
 });
 
 // ✅ **GET blog posts**
-app.get('/api/blog', (req, res) => {
-  const posts = JSON.parse(fs.readFileSync(blogFile, 'utf-8'));
-  res.json(posts);
+app.get('/api/blog', async (req, res) => {
+  try {
+    const snapshot = await blogCollection.orderBy('date', 'desc').get();
+    const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(posts);
+  } catch (error) {
+    console.error('Error fetching blog posts', error);
+    res.status(500).json({ message: 'Error fetching blog posts' });
+  }
 });
 
 // Get single blog post by ID
-app.get('/api/blog/:id', (req, res) => {
-  const posts = JSON.parse(fs.readFileSync(blogFile, 'utf-8'));
-  const post = posts.find(p => p.id == req.params.id);
-  if (!post) {
-    return res.status(404).json({ message: 'Post not found' });
+app.get('/api/blog/:id', async (req, res) => {
+  try {
+    const doc = await blogCollection.doc(req.params.id).get();
+    if (!doc.exists) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    res.json({ id: doc.id, ...doc.data() });
+  } catch (error) {
+    console.error('Error fetching post', error);
+    res.status(500).json({ message: 'Error fetching post' });
   }
-  res.json(post);
 });
 
 // ✅ **POST (Create Blog Post) (Protected Route)**
-app.post('/api/blog', verifyToken, upload.single('image'), (req, res) => {
-  const posts = JSON.parse(fs.readFileSync(blogFile, 'utf-8'));
-  const postData = JSON.parse(req.body.data);
-
-  postData.id = Date.now();
-  if (req.file) {
-    postData.image = `/uploads/${req.file.filename}`;
+app.post('/api/blog', verifyToken, upload.single('image'), async (req, res) => {
+  try {
+    const postData = JSON.parse(req.body.data);
+    if (req.file) {
+      postData.image = `/uploads/${req.file.filename}`;
+    }
+    const docRef = await blogCollection.add(postData);
+    await docRef.update({ id: docRef.id });
+    res.status(201).json({ id: docRef.id, ...postData });
+  } catch (error) {
+    console.error('Error creating post', error);
+    res.status(500).json({ message: 'Error creating post' });
   }
-
-  posts.unshift(postData);
-  fs.writeFileSync(blogFile, JSON.stringify(posts, null, 2));
-
-  res.status(201).json(postData);
 });
 
 // ✅ **Deploy Port Config**

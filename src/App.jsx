@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Services from "./components/Services";
 import BlogPreview from "./components/BlogPreview";
 import BlogPage from "./pages/BlogPage";
+import BlogPost from "./pages/BlogPost";
 import Footer from "./components/Footer";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
@@ -30,6 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:id" element={<BlogPost />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/sell" element={<SellAircraft />} />

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import ReactQuill, { Quill } from 'react-quill-new';
@@ -47,6 +47,7 @@ const initialValues = {
 
 const ManageBlog = () => {
   const quillRef = useRef(null);
+  const [imageFile, setImageFile] = useState(null);
 
   // Quill modules configuration
   const modules = {
@@ -89,17 +90,50 @@ const ManageBlog = () => {
     'customImage',
   ];
   
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(values));
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Acceso denegado. Por favor inicia sesión.');
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/blog', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      if (response.ok) {
+        alert('Publicación creada');
+        resetForm();
+        setImageFile(null);
+      } else {
+        const errorText = await response.text();
+        alert('Error: ' + errorText);
+      }
+    } catch (error) {
+      alert('Error al conectar con el servidor: ' + error.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="admin-blog">
       <h2>Gestión de Blog</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={BlogSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          console.log('Datos del blog:', values);
-          setSubmitting(false);
-          resetForm();
-        }}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, setFieldValue }) => (
           <Form>
@@ -114,6 +148,13 @@ const ManageBlog = () => {
             <label>Extracto</label>
             <Field as="textarea" name="excerpt" />
             <ErrorMessage name="excerpt" component="div" className="error" />
+
+            <label>Imagen Principal</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImageFile(e.target.files[0])}
+            />
 
             <label>Contenido</label>
             <ReactQuill

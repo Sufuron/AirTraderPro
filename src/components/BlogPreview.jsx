@@ -1,18 +1,28 @@
 // src/components/BlogPreview.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./BlogPreview.css";
-import blogData from "../data/blogData";
+
+const fetchPosts = async () => {
+  const res = await fetch("http://localhost:5000/api/blog");
+  if (!res.ok) throw new Error("Error fetching posts");
+  return res.json();
+};
 
 const BlogPreview = () => {
-  // For example, show only the first 3 posts as the "latest" articles.
-  const latestPosts = blogData.slice(0, 3);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetchPosts()
+      .then((data) => setPosts(data.slice(0, 3)))
+      .catch(() => setPosts([]));
+  }, []);
 
   return (
     <section className="blog-preview">
       <div className="blog-wrapper">
         <h2 className="blog-title">Ultimos Articulos</h2>
         <div className="blog-container">
-          {latestPosts.map((post) => (
+          {posts.map((post) => (
             <div className="blog-card" key={post.id}>
               <img src={post.image} alt={post.title} className="blog-image" />
               <div className="blog-content">

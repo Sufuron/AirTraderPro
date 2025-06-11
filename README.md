@@ -15,6 +15,7 @@ Yup: JavaScript schema builder for value parsing and validation.
 Backend:
 Node.js: JavaScript runtime built on Chrome's V8 JavaScript engine.
 Express: Web application framework for Node.js.
+Firebase Admin SDK: Used to store data in Firestore.
 Installation
 To run this project locally, follow these steps:
 
@@ -24,7 +25,9 @@ Clone the repository and install dependencies:
 git clone https://github.com/Sufuron/AirTraderPro.git
 cd AirTraderPro
 npm install
+npm install firebase
 cd server && npm install
+cp .env.example .env # provide your Firebase service account JSON
 ```
 
 Start the development servers in separate terminals:

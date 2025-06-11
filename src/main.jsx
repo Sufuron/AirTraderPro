@@ -1,15 +1,15 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router';
 import "animate.css";
-import './index.css'
-import App from './App.jsx'
+import './index.css';
+import App from './App.jsx';
+import './firebase.js';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-      <BrowserRouter>
-    <App />
-  </BrowserRouter>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>,
-)
-  
+);

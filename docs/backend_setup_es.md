@@ -15,9 +15,11 @@ administrativa para gestionar la documentación, las imágenes de aviones y las 
    ```
 2. Instalar las dependencias del frontend y del backend:
    ```bash
-   npm install
-   cd server && npm install
-   cd ..
+npm install
+npm install firebase
+cd server && npm install
+ cp .env.example .env # añade tu JSON de cuenta de servicio de Firebase
+ cd ..
    ```
 
 ## Puesta en marcha
@@ -41,8 +43,9 @@ Se recomienda abrir dos terminales.
    configuradas en `server/server.js` (`admin/password123` por defecto).
 2. Tras iniciar sesión, podrás crear, editar o eliminar:
    - Aviones en la sección **Inventory**.
-   - Entradas de blog en la sección **Blog**.
-   Las imágenes subidas se guardan en la carpeta `server/uploads`.
+  - Entradas de blog en la sección **Blog**.
+  Las imágenes subidas se guardan en la carpeta `server/uploads`.
+  Los datos de inventario y blog se almacenan en Firebase Firestore.
 
 Con estos pasos la aplicación quedará funcionando de forma local, permitiendo gestionar
 la documentación de tus aviones, imágenes y artículos del blog desde la interfaz de backend.

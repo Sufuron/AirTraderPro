@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
+import { auth } from './firebase';
 
 // Your web app's Firebase configuration (REPLACE with your actual config)
 const firebaseConfig = {

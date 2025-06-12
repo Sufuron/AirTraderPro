@@ -2,7 +2,7 @@ import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import ManageBlog from './admin/ManageBlog';
 import ManageInventory from './admin/ManageInventory';
 import './Admin.css';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.jsx';
 
 const Admin = () => {
   const { user, loading } = useAuth();

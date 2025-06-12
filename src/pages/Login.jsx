@@ -13,14 +13,14 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
-    try {
+   try {
       await signInWithEmailAndPassword(
         auth,
         credentials.email,
         credentials.password
       );
       navigate("/admin");
-    } catch (err) {
+       } catch (err) {
       console.error("Login error:", err.code, err.message);
       let message = "Ocurri\u00f3 un error al iniciar sesi\u00f3n.";
       switch (err.code) {
@@ -40,7 +40,7 @@ const Login = () => {
       setError(message);
     }
   };
-
+  
   return (
     <div className="login-page">
       <h2>Admin Login</h2>

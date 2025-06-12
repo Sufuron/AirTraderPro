@@ -1,29 +1,43 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import { API_URL } from "../utils/api";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    const response = await fetch(`${API_URL}/api/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      localStorage.setItem("token", data.token);
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        credentials.email,
+        credentials.password
+      );
       navigate("/admin");
-    } else {
-      setError("Credenciales incorrectas.");
+    } catch (err) {
+      console.error("Login error:", err.code, err.message);
+      let message = "Ocurri\u00f3 un error al iniciar sesi\u00f3n.";
+      switch (err.code) {
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+          message = "Correo electr\u00f3nico o contrase\u00f1a incorrectos.";
+          break;
+        case "auth/invalid-email":
+          message = "El formato del correo electr\u00f3nico es inv\u00e1lido.";
+          break;
+        case "auth/user-disabled":
+          message = "Este usuario ha sido deshabilitado.";
+          break;
+        default:
+          message = `Error: ${err.message}`;
+      }
+      setError(message);
     }
   };
 
@@ -32,10 +46,10 @@ const Login = () => {
       <h2>Admin Login</h2>
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
-          placeholder="Usuario"
-          value={credentials.username}
-          onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+          type="email"
+          placeholder="Correo electrónico"
+          value={credentials.email}
+          onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
           required
         />
         <input

@@ -43,8 +43,9 @@ Se recomienda abrir dos terminales.
    La aplicación web se servirá en `http://localhost:5173`.
 
 ## Uso de la página de administración
-1. Accede a `http://localhost:5173/login` e inicia sesión con las credenciales de administrador
-   configuradas en `server/server.js` (`admin/password123` por defecto).
+1. Accede a `http://localhost:5173/login` e inicia sesión con un usuario de Firebase
+   creado en la consola de autenticación. La aplicación detecta el estado de sesión automáticamente
+   mediante el observador `onAuthStateChanged` de Firebase.
 2. Tras iniciar sesión, podrás crear, editar o eliminar:
    - Aviones en la sección **Inventory**.
   - Entradas de blog en la sección **Blog**.

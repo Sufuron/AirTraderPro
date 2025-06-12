@@ -14,14 +14,31 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Gather missing variables to help troubleshoot setup issues
+const missingVars = Object.entries(firebaseConfig)
+  .filter(([, v]) => !v)
+  .map(([k]) => k);
+if (missingVars.length) {
+  console.warn(
+    `Firebase config missing values: ${missingVars.join(', ')}. ` +
+      'Check your .env file.'
+  );
+}
 
+const requiredVars = ['apiKey', 'authDomain', 'projectId', 'appId'];
+const missingRequired = requiredVars.filter((k) => !firebaseConfig[k]);
 
-// Get a reference to the services
-const db = getFirestore(app);
-const storage = getStorage(app);
-const auth = getAuth(app);
+let app;
+let db;
+let storage;
+let auth;
+if (!missingRequired.length) {
+  // Initialize Firebase when the required config is present
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  storage = getStorage(app);
+  auth = getAuth(app);
+}
 
 // Export the services so you can use them in other parts of your app
 export { db, storage, auth };

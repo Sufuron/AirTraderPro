@@ -1,7 +1,8 @@
 // src/firebase.js (Example - use YOUR config from the console!)
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore'; // <-- Import Firestore
-import { getStorage } from 'firebase/storage'; // <-- Import Storage
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 
 // Your web app's Firebase configuration (REPLACE with your actual config)
 const firebaseConfig = {
@@ -19,8 +20,9 @@ const app = initializeApp(firebaseConfig);
 
 
 // Get a reference to the services
-const db = getFirestore(app); // <-- Get Firestore instance
-const storage = getStorage(app); // <-- Get Storage instance
+const db = getFirestore(app);
+const storage = getStorage(app);
+const auth = getAuth(app);
 
 // Export the services so you can use them in other parts of your app
-export { db, storage };
+export { db, storage, auth };

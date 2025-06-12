@@ -63,7 +63,8 @@ Contact Us: Use the "Contact" form for any inquiries or feedback.
 
 The backend exposes the following routes on `http://localhost:5000`:
 
-- `POST /api/login` – obtain a JWT token for admin tasks
+*Clients authenticate using Firebase Authentication and send the resulting ID token in the `Authorization` header.*
+
 - `GET /api/planes` – list planes
 - `POST /api/planes` – create a plane (protected)
 - `GET /api/planes/:id` – fetch a single plane

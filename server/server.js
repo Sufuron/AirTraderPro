@@ -34,7 +34,8 @@ const upload = multer({ storage });
 
 // Firestore collections
 const planesCollection = db.collection('planes');
-const blogCollection = db.collection('blog');
+// Use a single collection for blog posts
+const blogCollection = db.collection('blogPosts');
 
 // No custom login endpoint. Clients authenticate with Firebase directly.
 

@@ -2,12 +2,15 @@ import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import ManageBlog from './admin/ManageBlog';
 import ManageInventory from './admin/ManageInventory';
 import './Admin.css';
+import { useAuth } from '../hooks/useAuth';
 
 const Admin = () => {
-  const token = localStorage.getItem("token");
+  const { user, loading } = useAuth();
 
-  if (!token) {
-    return <Navigate to="/login" />;
+  if (loading) return <p>Loading...</p>;
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
   }
 
   return (

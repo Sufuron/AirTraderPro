@@ -11,18 +11,33 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
+      await signInWithEmailAndPassword(
         auth,
         credentials.email,
         credentials.password
       );
-      const token = await userCredential.user.getIdToken();
-      localStorage.setItem("token", token);
       navigate("/admin");
     } catch (err) {
-      setError("Credenciales incorrectas.");
+      console.error("Login error:", err.code, err.message);
+      let message = "Ocurri\u00f3 un error al iniciar sesi\u00f3n.";
+      switch (err.code) {
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+          message = "Correo electr\u00f3nico o contrase\u00f1a incorrectos.";
+          break;
+        case "auth/invalid-email":
+          message = "El formato del correo electr\u00f3nico es inv\u00e1lido.";
+          break;
+        case "auth/user-disabled":
+          message = "Este usuario ha sido deshabilitado.";
+          break;
+        default:
+          message = `Error: ${err.message}`;
+      }
+      setError(message);
     }
   };
 

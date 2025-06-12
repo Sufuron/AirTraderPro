@@ -1,8 +1,12 @@
+require('dotenv').config(); // Load variables from .env into process.env
+// ... rest of your server.js code
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
 const admin = require('firebase-admin');
+
+
 
 // Initialize Firebase Admin using a service account provided via environment variable
 const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT ?

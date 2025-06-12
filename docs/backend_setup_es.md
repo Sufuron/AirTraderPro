@@ -20,6 +20,10 @@ npm install firebase
 cd server && npm install
  cp .env.example .env # añade tu JSON de cuenta de servicio de Firebase
  cd ..
+ cp .env.example .env # añade la configuración web de Firebase para el frontend
+ # El archivo de ejemplo ya incluye el ID del proyecto (aviacion360-7a463)
+ # y el número del proyecto/messaging sender ID (972139427481).
+ # Solo debes rellenar tu API key, app ID y measurement ID.
    ```
 
 ## Puesta en marcha

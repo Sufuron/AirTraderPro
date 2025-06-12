@@ -5,6 +5,9 @@ import ReactQuill, { Quill } from 'react-quill-new';
 import ImageResize from 'quill-image-resize-module-react';
 import CustomImageBlot from '../../components/CustomImageBlot';
 import './ManageBlog.css';
+import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../firebase';
 
 // Register the image resize module
 Quill.register('modules/imageResize', ImageResize);
@@ -91,37 +94,24 @@ const ManageBlog = () => {
   ];
   
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(values));
-    if (imageFile) {
-      formData.append('image', imageFile);
-    }
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('Acceso denegado. Por favor inicia sesión.');
-      setSubmitting(false);
-      return;
-    }
-
     try {
-      const response = await fetch('http://localhost:5000/api/blog', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-      if (response.ok) {
-        alert('Publicación creada');
-        resetForm();
-        setImageFile(null);
-      } else {
-        const errorText = await response.text();
-        alert('Error: ' + errorText);
+      let imageUrl = '';
+      if (imageFile) {
+        const imageRef = ref(storage, `blog/${Date.now()}_${imageFile.name}`);
+        await uploadBytes(imageRef, imageFile);
+        imageUrl = await getDownloadURL(imageRef);
       }
+
+      await addDoc(collection(db, 'blogPosts'), {
+        ...values,
+        imageUrl,
+      });
+
+      alert('Publicación creada');
+      resetForm();
+      setImageFile(null);
     } catch (error) {
-      alert('Error al conectar con el servidor: ' + error.message);
+      alert('Error al crear la publicación: ' + error.message);
     } finally {
       setSubmitting(false);
     }

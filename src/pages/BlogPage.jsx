@@ -2,20 +2,25 @@
 import React, { useEffect, useState } from "react";
 import "./BlogPage.css";
 import { Link } from "react-router-dom";
-
-const fetchPosts = async () => {
-  const res = await fetch("http://localhost:5000/api/blog");
-  if (!res.ok) throw new Error("Error fetching posts");
-  return res.json();
-};
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "../firebase";
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetchPosts()
-      .then(setPosts)
-      .catch(() => setPosts([]));
+    const fetchPosts = async () => {
+      try {
+        const q = query(collection(db, 'blogPosts'), orderBy('date', 'desc'));
+        const snapshot = await getDocs(q);
+        const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setPosts(list);
+      } catch (e) {
+        console.error('Error fetching posts', e);
+        setPosts([]);
+      }
+    };
+    fetchPosts();
   }, []);
 
   return (
@@ -25,7 +30,9 @@ const BlogPage = () => {
         <div className="blog-container">
           {posts.map((post) => (
             <div className="blog-card" key={post.id}>
-              <img src={post.image} alt={post.title} className="blog-image" />
+              {post.imageUrl && (
+                <img src={post.imageUrl} alt={post.title} className="blog-image" />
+              )}
               <div className="blog-content">
                 <h3 className="blog-card-title">{post.title}</h3>
                 <p className="blog-card-date">{post.date}</p>

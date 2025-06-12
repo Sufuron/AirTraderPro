@@ -2,8 +2,8 @@ import React from "react";
 import "./InventoryCard.css";
 
 const InventoryCard = ({ plane, onClick }) => {
-  const imageUrl = plane.images 
-    ? `http://localhost:5000${plane.images[0]}`
+  const imageUrl = plane.imageUrls && plane.imageUrls.length > 0
+    ? plane.imageUrls[0]
     : plane.image;
 
   return (

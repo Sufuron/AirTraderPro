@@ -1,10 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import ReactQuill, { Quill } from 'react-quill-new';
 import ImageResize from 'quill-image-resize-module-react';
 import CustomImageBlot from '../../components/CustomImageBlot';
 import './ManageBlog.css';
+import { collection, addDoc, updateDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../firebase';
 
 // Register the image resize module
 Quill.register('modules/imageResize', ImageResize);
@@ -48,6 +51,17 @@ const initialValues = {
 const ManageBlog = () => {
   const quillRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [editingPost, setEditingPost] = useState(null);
+  const [formValues, setFormValues] = useState(initialValues);
+  
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const snapshot = await getDocs(collection(db, 'blogPosts'));
+      setPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    };
+    fetchPosts();
+  }, []);
 
   // Quill modules configuration
   const modules = {
@@ -91,47 +105,60 @@ const ManageBlog = () => {
   ];
   
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(values));
-    if (imageFile) {
-      formData.append('image', imageFile);
-    }
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('Acceso denegado. Por favor inicia sesión.');
-      setSubmitting(false);
-      return;
-    }
-
     try {
-      const response = await fetch('http://localhost:5000/api/blog', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-      if (response.ok) {
-        alert('Publicación creada');
-        resetForm();
-        setImageFile(null);
-      } else {
-        const errorText = await response.text();
-        alert('Error: ' + errorText);
+      let imageUrl = '';
+      if (imageFile) {
+        const imageRef = ref(storage, `blog/${Date.now()}_${imageFile.name}`);
+        await uploadBytes(imageRef, imageFile);
+        imageUrl = await getDownloadURL(imageRef);
       }
+      if (editingPost) {
+        await updateDoc(doc(db, 'blogPosts', editingPost.id), {
+          ...values,
+          imageUrl: imageUrl || editingPost.imageUrl || '',
+        });
+        alert('Publicación actualizada');
+      } else {
+        await addDoc(collection(db, 'blogPosts'), {
+          ...values,
+          imageUrl,
+        });
+        alert('Publicación creada');
+      }
+      resetForm();
+      setImageFile(null);
+      setEditingPost(null);
+      const snapshot = await getDocs(collection(db, 'blogPosts'));
+      setPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
-      alert('Error al conectar con el servidor: ' + error.message);
+      alert('Error al crear la publicación: ' + error.message);
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleDelete = async (id) => {
+    await deleteDoc(doc(db, 'blogPosts', id));
+    const snapshot = await getDocs(collection(db, 'blogPosts'));
+    setPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  };
+
+  const handleEdit = (post) => {
+    setEditingPost(post);
+    setFormValues({
+      title: post.title,
+      date: post.date,
+      excerpt: post.excerpt,
+      content: post.content,
+    });
   };
 
   return (
     <div className="admin-blog">
       <h2>Gestión de Blog</h2>
       <Formik
-        initialValues={initialValues}
+        initialValues={formValues}
+        enableReinitialize
         validationSchema={BlogSchema}
         onSubmit={handleSubmit}
       >
@@ -167,11 +194,21 @@ const ManageBlog = () => {
             <ErrorMessage name="content" component="div" className="error" />
 
             <button className="submit-button" type="submit" disabled={isSubmitting}>
-              Publicar
+              {editingPost ? 'Actualizar' : 'Publicar'}
             </button>
           </Form>
         )}
       </Formik>
+      <h3>Publicaciones Existentes</h3>
+      <ul className="admin-list">
+        {posts.map((p) => (
+          <li key={p.id}>
+            {p.title} - {p.date}
+            <button type="button" onClick={() => handleEdit(p)}>Editar</button>
+            <button type="button" onClick={() => handleDelete(p.id)}>Eliminar</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

@@ -2,7 +2,6 @@ const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
-const jwt = require('jsonwebtoken');
 const admin = require('firebase-admin');
 
 // Initialize Firebase Admin using a service account provided via environment variable
@@ -22,7 +21,6 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-const SECRET_KEY = "your_super_secret_key"; // Use a strong secret key
 
 // Multer setup for images
 const storage = multer.diskStorage({
@@ -38,30 +36,24 @@ const upload = multer({ storage });
 const planesCollection = db.collection('planes');
 const blogCollection = db.collection('blog');
 
-// Admin credentials (replace with a secure database)
-const adminUser = { username: "admin", password: "password123" };
-
-// ✅ **Admin Login API (Returns JWT Token)**
-app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
-  if (username === adminUser.username && password === adminUser.password) {
-    const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: '2h' });
-    res.json({ success: true, token });
-  } else {
-    res.status(401).json({ success: false, message: "Credenciales inválidas" });
-  }
-});
+// No custom login endpoint. Clients authenticate with Firebase directly.
 
 // ✅ **Middleware: Protect API Routes**
-const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(403).json({ message: "No token provided" });
+const verifyToken = async (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(403).json({ message: 'No token provided' });
+  }
 
-  jwt.verify(token.split(" ")[1], SECRET_KEY, (err, decoded) => {
-    if (err) return res.status(401).json({ message: "Token inválido" });
-    req.user = decoded;
+  const idToken = authHeader.split(' ')[1];
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    req.user = decodedToken;
     next();
-  });
+  } catch (err) {
+    res.status(401).json({ message: 'Token inválido' });
+  }
 };
 
 // ✅ **GET planes**

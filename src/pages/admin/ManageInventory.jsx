@@ -4,7 +4,9 @@ import * as Yup from 'yup';
 import FieldSection from '../../components/FieldSection';
 import sellAircraftText from '../../data/sellAircraftText';
 import './ManageInventory.css';
-import { useNavigate } from 'react-router-dom';
+import { collection, addDoc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../firebase';
 
 const validationSchema = Yup.object({
   aircraftType: Yup.string().required("El tipo de aeronave es obligatorio"),
@@ -43,40 +45,28 @@ const initialValues = {
 
 const ManageInventory = () => {
   const [selectedImages, setSelectedImages] = useState([]);
-  const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(values));
-    selectedImages.forEach((image) => formData.append("images", image));
-
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Acceso denegado. Por favor inicia sesión.");
-      navigate('/login');
-      return;
-    }
-
     try {
-      const response = await fetch('http://localhost:5000/api/planes', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      // Create the document first to get its ID
+      const docRef = await addDoc(collection(db, 'planes'), values);
 
-      if (response.ok) {
-        alert('Aeronave agregada exitosamente.');
-        resetForm();
-        setSelectedImages([]);
-      } else {
-        const errorText = await response.text();
-        alert('Error al subir la aeronave: ' + errorText);
+      const imageUrls = [];
+      for (const image of selectedImages) {
+        const imageRef = ref(storage, `planes/${docRef.id}/${image.name}`);
+        await uploadBytes(imageRef, image);
+        const url = await getDownloadURL(imageRef);
+        imageUrls.push(url);
       }
+
+      // Store the image URLs in the document
+      await updateDoc(docRef, { imageUrls });
+
+      alert('Aeronave agregada exitosamente.');
+      resetForm();
+      setSelectedImages([]);
     } catch (error) {
-      alert('Error al conectar con el servidor: ' + error.message);
+      alert('Error al subir la aeronave: ' + error.message);
     } finally {
       setSubmitting(false);
     }

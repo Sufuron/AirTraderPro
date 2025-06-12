@@ -1,21 +1,22 @@
+// src/firebase.js (Example - use YOUR config from the console!)
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import { getFirestore } from 'firebase/firestore'; // <-- Import Firestore
+import { getStorage } from 'firebase/storage'; // <-- Import Storage
 
-// Firebase configuration pulled from environment variables.
-// Create a `.env` file based on `.env.example` and fill in your values.
+// Your web app's Firebase configuration (REPLACE with your actual config)
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyD4IUefTEBmTPUHxqzOddnKZm4sGGbWGEA",
+  authDomain: "aviacion360-7a463.firebaseapp.com",
+  projectId: "aviacion360-7a463",
+  storageBucket: "aviacion360-7a463.firebasestorage.app",
+  messagingSenderId: "972139427481",
+  appId: "1:972139427481:web:4edb85c5e677a49fabaa08",
+  measurementId: "G-2ZCPNE6WRJ"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
 
 // Get a reference to the services
 const db = getFirestore(app); // <-- Get Firestore instance

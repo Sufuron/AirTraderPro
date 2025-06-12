@@ -3,16 +3,24 @@ import React, { useEffect, useState } from "react";
 import "./BlogPage.css";
 import { Link } from "react-router-dom";
 import { getBlogPosts } from "../utils/firestore";
-
 const fetchPosts = () => getBlogPosts();
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetchPosts()
-      .then(setPosts)
-      .catch(() => setPosts([]));
+    const fetchPosts = async () => {
+      try {
+        const q = query(collection(db, 'blogPosts'), orderBy('date', 'desc'));
+        const snapshot = await getDocs(q);
+        const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setPosts(list);
+      } catch (e) {
+        console.error('Error fetching posts', e);
+        setPosts([]);
+      }
+    };
+    fetchPosts();
   }, []);
 
   return (

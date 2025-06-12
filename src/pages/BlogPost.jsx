@@ -8,10 +8,20 @@ const BlogPost = () => {
   const [post, setPost] = useState(null);
 
   useEffect(() => {
-    getBlogPost(id)
+   getBlogPost(id)
       .then(setPost)
       .catch(() => setPost(null));
   }, [id]);
+
+  if (!post) {
+    return (
+      <section className="blog-post">
+        <div className="blog-wrapper">
+          <p>Post no encontrado.</p>
+        </div>
+      </section>
+    );
+  }
 
   if (!post) {
     return (

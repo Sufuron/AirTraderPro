@@ -10,7 +10,7 @@ const Inventory = () => {
   const [selectedPlane, setSelectedPlane] = useState(null);
 
   useEffect(() => {
-    getPlanes()
+  getPlanes()
       .then((apiPlanes) => setPlanes([...planesData, ...apiPlanes]))
       .catch((err) => {
         console.error('Error fetching planes:', err);

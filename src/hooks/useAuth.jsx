@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth as firebaseAuth } from '../firebase';
+import { auth } from '../firebase';
 
 const AuthContext = createContext({ user: null, loading: true });
 
@@ -9,12 +9,12 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-   if (!firebaseAuth) {
+    if (!auth) {
       // Firebase failed to initialize
       setLoading(false);
       return;
     }
-    const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });

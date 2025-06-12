@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth as firebaseAuth } from "../firebase";
+import { auth } from "../firebase";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -14,11 +14,11 @@ const Login = () => {
     setError("");
 
    try {
-      if (!firebaseAuth) {
+      if (!auth) {
         throw new Error('Firebase not initialized');
       }
       await signInWithEmailAndPassword(
-        firebaseAuth,
+        auth,
         credentials.email,
         credentials.password
       );

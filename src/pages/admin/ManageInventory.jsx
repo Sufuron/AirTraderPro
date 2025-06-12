@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import FieldSection from '../../components/FieldSection';
 import sellAircraftText from '../../data/sellAircraftText';
 import './ManageInventory.css';
-import { collection, addDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
 
@@ -45,27 +45,53 @@ const initialValues = {
 
 const ManageInventory = () => {
   const [selectedImages, setSelectedImages] = useState([]);
+  const [planes, setPlanes] = useState([]);
+  const [editingPlane, setEditingPlane] = useState(null);
+  const [formValues, setFormValues] = useState(initialValues);
+    useEffect(() => {
+    const fetchPlanes = async () => {
+      const snapshot = await getDocs(collection(db, 'planes'));
+      setPlanes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    };
+    fetchPlanes();
+  }, []);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // Create the document first to get its ID
-      const docRef = await addDoc(collection(db, 'planes'), values);
+       let docRef;
+      if (editingPlane) {
+        docRef = doc(db, 'planes', editingPlane.id);
+        await updateDoc(docRef, values);
+      } else {
+            docRef = await addDoc(collection(db, 'planes'), values);
+      }
 
       const imageUrls = [];
       for (const image of selectedImages) {
-        const imageRef = ref(storage, `planes/${docRef.id}/${image.name}`);
+        const id = editingPlane ? editingPlane.id : docRef.id;
+        const imageRef = ref(storage, `planes/${id}/${image.name}`);
         await uploadBytes(imageRef, image);
         const url = await getDownloadURL(imageRef);
         imageUrls.push(url);
       }
 
       // Store the image URLs in the document
-      await updateDoc(docRef, { imageUrls });
+      if (imageUrls.length) {
+        await updateDoc(docRef, {
+          imageUrls: editingPlane && editingPlane.imageUrls
+            ? [...editingPlane.imageUrls, ...imageUrls]
+            : imageUrls,
+        });
+      }
 
-      alert('Aeronave agregada exitosamente.');
+      alert(editingPlane ? 'Aeronave actualizada' : 'Aeronave agregada exitosamente.');
       resetForm();
       setSelectedImages([]);
+      setEditingPlane(null);
+      const snapshot = await getDocs(collection(db, 'planes'));
+      setPlanes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
+      alert('Error al conectar con el servidor: ' + error.message);
       alert('Error al subir la aeronave: ' + error.message);
     } finally {
       setSubmitting(false);
@@ -82,12 +108,26 @@ const ManageInventory = () => {
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
+  const handleDelete = async (id) => {
+    await deleteDoc(doc(db, 'planes', id));
+    const snapshot = await getDocs(collection(db, 'planes'));
+    setPlanes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  };
+
+  const handleEdit = (plane) => {
+    setEditingPlane(plane);
+    setFormValues({
+      ...plane,
+    });
+  };
+  
   return (
     <div className="manage-inventory-page">
       <div className="manage-inventory-container">
         <h1>Gestionar Inventario</h1>
         <Formik
-          initialValues={initialValues}
+          initialValues={formValues}
+          enableReinitialize
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
@@ -121,11 +161,21 @@ const ManageInventory = () => {
               </section>
 
               <button type="submit" className="submit-button" disabled={isSubmitting}>
-                Guardar Aeronave
+                {editingPlane ? 'Actualizar Aeronave' : 'Guardar Aeronave'}
               </button>
             </Form>
           )}
         </Formik>
+        <h2>Aeronaves Existentes</h2>
+        <ul className="admin-list">
+          {planes.map((p) => (
+            <li key={p.id}>
+              {p.manufacturer} {p.model} ({p.year})
+              <button type="button" onClick={() => handleEdit(p)}>Editar</button>
+              <button type="button" onClick={() => handleDelete(p.id)}>Eliminar</button>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

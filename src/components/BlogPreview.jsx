@@ -1,12 +1,9 @@
 // src/components/BlogPreview.jsx
 import React, { useEffect, useState } from "react";
 import "./BlogPreview.css";
+import { getBlogPosts } from "../utils/firestore";
 
-const fetchPosts = async () => {
-  const res = await fetch("http://localhost:5000/api/blog");
-  if (!res.ok) throw new Error("Error fetching posts");
-  return res.json();
-};
+const fetchPosts = () => getBlogPosts();
 
 const BlogPreview = () => {
   const [posts, setPosts] = useState([]);
@@ -24,7 +21,9 @@ const BlogPreview = () => {
         <div className="blog-container">
           {posts.map((post) => (
             <div className="blog-card" key={post.id}>
-              <img src={post.image} alt={post.title} className="blog-image" />
+              {post.imageUrl && (
+                <img src={post.imageUrl} alt={post.title} className="blog-image" />
+              )}
               <div className="blog-content">
                 <h3 className="blog-card-title">{post.title}</h3>
                 <p className="blog-excerpt">{post.excerpt}</p>

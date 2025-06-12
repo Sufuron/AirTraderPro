@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './BlogPost.css';
+import { getBlogPost } from '../utils/firestore';
 
 const BlogPost = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/blog/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Post not found');
-        return res.json();
-      })
+    getBlogPost(id)
       .then(setPost)
       .catch(() => setPost(null));
   }, [id]);
@@ -31,8 +28,8 @@ const BlogPost = () => {
       <div className="blog-wrapper">
         <h2 className="blog-title">{post.title}</h2>
         <p className="blog-card-date">{post.date}</p>
-        {post.image && (
-          <img src={post.image} alt={post.title} className="blog-image" />
+        {post.imageUrl && (
+          <img src={post.imageUrl} alt={post.title} className="blog-image" />
         )}
         <div
           className="blog-content"

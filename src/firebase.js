@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
-import { auth } from './firebase';
+// Removed: import { auth } from './firebase'; // No longer needed - you're defining it here!
 
 // Firebase configuration is read from Vite environment variables
 const firebaseConfig = {
@@ -15,7 +15,7 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Gather missing variables to help troubleshoot setup issues
+// --- Your excellent logging and check for missing variables ---
 const missingVars = Object.entries(firebaseConfig)
   .filter(([, v]) => !v)
   .map(([k]) => k);
@@ -28,19 +28,33 @@ if (missingVars.length) {
 
 const requiredVars = ['apiKey', 'authDomain', 'projectId', 'appId'];
 const missingRequired = requiredVars.filter((k) => !firebaseConfig[k]);
+// -------------------------------------------------------------
 
-let app;
-let db;
-let storage;
-let auth;
+let app = undefined; // Initialize with undefined explicitly
+let db = undefined;
+let storage = undefined;
+let auth = undefined;
+
 if (!missingRequired.length) {
-  // Initialize Firebase when the required config is present
-  app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-  storage = getStorage(app);
-  auth = getAuth(app);
+  // Initialize Firebase ONLY when the required config is present
+  try {
+      app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      storage = getStorage(app);
+      auth = getAuth(app);
+      console.log("Firebase initialized successfully!"); // Optional: log success
+  } catch (error) {
+      console.error("Failed to initialize Firebase:", error);
+      // You might want to handle this failure state more explicitly in your app
+      // if initialization is critical.
+  }
+} else {
+    console.error("Firebase initialization skipped due to missing required config.");
+    // Ensure your app handles cases where auth, db, storage are undefined
 }
 
-// Export the services so you can use them in other parts of your app
-export { db, storage, auth };
+
+// **Add this export statement!**
+// This makes 'app', 'db', 'storage', and 'auth' available when other files import from './firebase'
+export { app, db, storage, auth };
 

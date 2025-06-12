@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './BlogPost.css';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { getBlogPost } from '../utils/firestore';
 
 const BlogPost = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
 
   useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const snap = await getDoc(doc(db, 'blogPosts', id));
-        if (snap.exists()) {
-          setPost({ id: snap.id, ...snap.data() });
-        } else {
-          setPost(null);
-        }
-      } catch (e) {
-        console.error('Error fetching post', e);
-        setPost(null);
-      }
-    };
-    fetchPost();
+   getBlogPost(id)
+      .then(setPost)
+      .catch(() => setPost(null));
   }, [id]);
+
+  if (!post) {
+    return (
+      <section className="blog-post">
+        <div className="blog-wrapper">
+          <p>Post no encontrado.</p>
+        </div>
+      </section>
+    );
+  }
 
   if (!post) {
     return (

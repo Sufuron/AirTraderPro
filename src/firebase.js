@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyD4IUefTEBmTPUHxqzOddnKZm4sGGbWGEA",
   authDomain: "aviacion360-7a463.firebaseapp.com",
   projectId: "aviacion360-7a463",
-  storageBucket: "aviacion360-7a463.firebasestorage.app",
+  storageBucket: "aviacion360-7a463.appspot.com",
   messagingSenderId: "972139427481",
   appId: "1:972139427481:web:4edb85c5e677a49fabaa08",
   measurementId: "G-2ZCPNE6WRJ"

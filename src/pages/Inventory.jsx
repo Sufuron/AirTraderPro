@@ -3,33 +3,19 @@ import { Link } from "react-router-dom";
 import "./Inventory.css";
 import InventoryCard from "../components/InventoryCard";
 import planesData from "../data/planesData";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
+import { getPlanes } from "../utils/firestore";
 
 const Inventory = () => {
   const [planes, setPlanes] = useState([]);
   const [selectedPlane, setSelectedPlane] = useState(null);
 
   useEffect(() => {
-    const fetchPlanes = async () => {
-      try {
-        const snapshot = await getDocs(collection(db, 'planes'));
-        const apiPlanes = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: `${data.manufacturer} ${data.model}`,
-            imageUrls: data.imageUrls || [],
-            ...data,
-          };
-        });
-        setPlanes([...planesData, ...apiPlanes]);
-      } catch (err) {
+  getPlanes()
+      .then((apiPlanes) => setPlanes([...planesData, ...apiPlanes]))
+      .catch((err) => {
         console.error('Error fetching planes:', err);
         setPlanes(planesData);
-      }
-    };
-    fetchPlanes();
+      });
   }, []);
 
   const closeModal = () => setSelectedPlane(null);
@@ -59,11 +45,7 @@ const Inventory = () => {
             <div className="modal-content-top">
             <div className="modal-content-left">
   <img
-    src={
-      selectedPlane.imageUrls && selectedPlane.imageUrls.length > 0
-        ? selectedPlane.imageUrls[0]
-        : selectedPlane.image
-    }
+    src={selectedPlane.imageUrls ? selectedPlane.imageUrls[0] : selectedPlane.image}
     alt={selectedPlane.title}
     className="modal-image"
   />

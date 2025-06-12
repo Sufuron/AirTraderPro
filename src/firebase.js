@@ -1,16 +1,16 @@
-// src/firebase.js (Example - use YOUR config from the console!)
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore'; // <-- Import Firestore
-import { getStorage } from 'firebase/storage'; // <-- Import Storage
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
-// Your web app's Firebase configuration (REPLACE with your actual config)
+// Firebase configuration for Aviacion360
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "aviacion360-7a463", // <-- Your Project ID
-  storageBucket: "YOUR_STORAGE_BUCKET", // <-- Your Storage Bucket
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyD4IUefTEBmTPUHxqzOddnKZm4sGGbWGEA",
+  authDomain: "aviacion360-7a463.firebaseapp.com",
+  projectId: "aviacion360-7a463",
+  storageBucket: "aviacion360-7a463.firebasestorage.app",
+  messagingSenderId: "972139427481",
+  appId: "1:972139427481:web:4edb85c5e677a49fabaa08",
+  measurementId: "G-2ZCPNE6WRJ",
 };
 
 // Initialize Firebase

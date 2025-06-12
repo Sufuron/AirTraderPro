@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import FieldSection from '../../components/FieldSection';
 import sellAircraftText from '../../data/sellAircraftText';
 import './ManageInventory.css';
-import { useNavigate } from 'react-router-dom';
+import { collection, addDoc, updateDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../firebase';
 
 const validationSchema = Yup.object({
   aircraftType: Yup.string().required("El tipo de aeronave es obligatorio"),
@@ -43,40 +45,54 @@ const initialValues = {
 
 const ManageInventory = () => {
   const [selectedImages, setSelectedImages] = useState([]);
-  const navigate = useNavigate();
+  const [planes, setPlanes] = useState([]);
+  const [editingPlane, setEditingPlane] = useState(null);
+  const [formValues, setFormValues] = useState(initialValues);
+
+  useEffect(() => {
+    const fetchPlanes = async () => {
+      const snapshot = await getDocs(collection(db, 'planes'));
+      setPlanes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    };
+    fetchPlanes();
+  }, []);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(values));
-    selectedImages.forEach((image) => formData.append("images", image));
-
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Acceso denegado. Por favor inicia sesión.");
-      navigate('/login');
-      return;
-    }
-
     try {
-      const response = await fetch('http://localhost:5000/api/planes', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (response.ok) {
-        alert('Aeronave agregada exitosamente.');
-        resetForm();
-        setSelectedImages([]);
+      let docRef;
+      if (editingPlane) {
+        docRef = doc(db, 'planes', editingPlane.id);
+        await updateDoc(docRef, values);
       } else {
-        const errorText = await response.text();
-        alert('Error al subir la aeronave: ' + errorText);
+        docRef = await addDoc(collection(db, 'planes'), values);
       }
+
+      const imageUrls = [];
+      for (const image of selectedImages) {
+        const id = editingPlane ? editingPlane.id : docRef.id;
+        const imageRef = ref(storage, `planes/${id}/${image.name}`);
+        await uploadBytes(imageRef, image);
+        const url = await getDownloadURL(imageRef);
+        imageUrls.push(url);
+      }
+
+      // Store the image URLs in the document
+      if (imageUrls.length) {
+        await updateDoc(docRef, {
+          imageUrls: editingPlane && editingPlane.imageUrls
+            ? [...editingPlane.imageUrls, ...imageUrls]
+            : imageUrls,
+        });
+      }
+
+      alert(editingPlane ? 'Aeronave actualizada' : 'Aeronave agregada exitosamente.');
+      resetForm();
+      setSelectedImages([]);
+      setEditingPlane(null);
+      const snapshot = await getDocs(collection(db, 'planes'));
+      setPlanes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
-      alert('Error al conectar con el servidor: ' + error.message);
+      alert('Error al subir la aeronave: ' + error.message);
     } finally {
       setSubmitting(false);
     }
@@ -92,12 +108,26 @@ const ManageInventory = () => {
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
+  const handleDelete = async (id) => {
+    await deleteDoc(doc(db, 'planes', id));
+    const snapshot = await getDocs(collection(db, 'planes'));
+    setPlanes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  };
+
+  const handleEdit = (plane) => {
+    setEditingPlane(plane);
+    setFormValues({
+      ...plane,
+    });
+  };
+
   return (
     <div className="manage-inventory-page">
       <div className="manage-inventory-container">
         <h1>Gestionar Inventario</h1>
         <Formik
-          initialValues={initialValues}
+          initialValues={formValues}
+          enableReinitialize
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
@@ -131,11 +161,21 @@ const ManageInventory = () => {
               </section>
 
               <button type="submit" className="submit-button" disabled={isSubmitting}>
-                Guardar Aeronave
+                {editingPlane ? 'Actualizar Aeronave' : 'Guardar Aeronave'}
               </button>
             </Form>
           )}
         </Formik>
+        <h2>Aeronaves Existentes</h2>
+        <ul className="admin-list">
+          {planes.map((p) => (
+            <li key={p.id}>
+              {p.manufacturer} {p.model} ({p.year})
+              <button type="button" onClick={() => handleEdit(p)}>Editar</button>
+              <button type="button" onClick={() => handleDelete(p.id)}>Eliminar</button>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

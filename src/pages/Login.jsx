@@ -1,3 +1,6 @@
+      if (!firebaseAuth) {
+        throw new Error('Firebase not initialized');
+      }
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";

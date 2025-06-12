@@ -9,6 +9,11 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!firebaseAuth) {
+      // Firebase failed to initialize
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);

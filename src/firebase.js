@@ -2,16 +2,20 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
-import { auth } from './firebase';
+      "Check your .env file."
 
-// Firebase configuration is read from Vite environment variables
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+let app;
+let db;
+let storage;
+let firebaseAuth;
+if (!missingVars.length) {
+  // Initialize Firebase
+  app = initializeApp(firebaseConfig);
+  // Get a reference to the services
+  db = getFirestore(app);
+  storage = getStorage(app);
+  firebaseAuth = getAuth(app);
+}
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 

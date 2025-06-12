@@ -48,8 +48,7 @@ const ManageInventory = () => {
   const [planes, setPlanes] = useState([]);
   const [editingPlane, setEditingPlane] = useState(null);
   const [formValues, setFormValues] = useState(initialValues);
-
-  useEffect(() => {
+    useEffect(() => {
     const fetchPlanes = async () => {
       const snapshot = await getDocs(collection(db, 'planes'));
       setPlanes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
@@ -59,12 +58,12 @@ const ManageInventory = () => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      let docRef;
+       let docRef;
       if (editingPlane) {
         docRef = doc(db, 'planes', editingPlane.id);
         await updateDoc(docRef, values);
       } else {
-        docRef = await addDoc(collection(db, 'planes'), values);
+            docRef = await addDoc(collection(db, 'planes'), values);
       }
 
       const imageUrls = [];
@@ -92,6 +91,7 @@ const ManageInventory = () => {
       const snapshot = await getDocs(collection(db, 'planes'));
       setPlanes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
+      alert('Error al conectar con el servidor: ' + error.message);
       alert('Error al subir la aeronave: ' + error.message);
     } finally {
       setSubmitting(false);
@@ -120,7 +120,7 @@ const ManageInventory = () => {
       ...plane,
     });
   };
-
+  
   return (
     <div className="manage-inventory-page">
       <div className="manage-inventory-container">

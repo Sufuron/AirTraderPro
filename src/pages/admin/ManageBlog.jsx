@@ -106,7 +106,7 @@ const ManageBlog = () => {
   
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      let imageUrl = '';
+       let imageUrl = '';
       if (imageFile) {
         const imageRef = ref(storage, `blog/${Date.now()}_${imageFile.name}`);
         await uploadBytes(imageRef, imageFile);
@@ -119,7 +119,7 @@ const ManageBlog = () => {
         });
         alert('Publicación actualizada');
       } else {
-        await addDoc(collection(db, 'blogPosts'), {
+           await addDoc(collection(db, 'blogPosts'), {
           ...values,
           imageUrl,
         });

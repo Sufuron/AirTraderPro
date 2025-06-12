@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!firebaseAuth) {
+   if (!firebaseAuth) {
       // Firebase failed to initialize
       setLoading(false);
       return;

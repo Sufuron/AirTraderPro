@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
+import { auth } from './firebase';
 
 // Firebase configuration is read from Vite environment variables
 const firebaseConfig = {
@@ -40,3 +41,5 @@ if (!missingVars.length) {
 
 // Export the services so you can use them in other parts of your app
 export { db, storage, firebaseAuth as auth };
+
+

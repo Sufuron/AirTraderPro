@@ -22,18 +22,24 @@ const missingVars = Object.entries(firebaseConfig)
 if (missingVars.length) {
   console.warn(
     `Firebase config missing values: ${missingVars.join(", ")}. ` +
-    "Check your .env file."
+      "Check your .env file."
   );
 }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-
-// Get a reference to the services
-const db = getFirestore(app);
-const storage = getStorage(app);
-const firebaseAuth = getAuth(app);
+let app;
+let db;
+let storage;
+let firebaseAuth;
+if (!missingVars.length) {
+  // Initialize Firebase
+  app = initializeApp(firebaseConfig);
+  // Get a reference to the services
+  db = getFirestore(app);
+  storage = getStorage(app);
+  firebaseAuth = getAuth(app);
+}
 
 // Export the services so you can use them in other parts of your app
 export { db, storage, firebaseAuth as auth };
+
+

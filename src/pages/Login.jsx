@@ -14,6 +14,9 @@ const Login = () => {
     setError("");
 
    try {
+      if (!firebaseAuth) {
+        throw new Error('Firebase not initialized');
+      }
       await signInWithEmailAndPassword(
         firebaseAuth,
         credentials.email,

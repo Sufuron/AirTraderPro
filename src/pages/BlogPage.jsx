@@ -1,9 +1,9 @@
 // src/pages/BlogPage.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./BlogPage.css";
 import { Link } from "react-router-dom";
-import { getBlogPosts } from "../utils/firestore";
-const fetchPosts = () => getBlogPosts();
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);

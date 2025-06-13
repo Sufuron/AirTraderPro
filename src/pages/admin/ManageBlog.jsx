@@ -1,9 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import ReactQuill, { Quill } from 'react-quill-new';
 import ImageResize from 'quill-image-resize-module-react';
-import CustomImageBlot from '../../components/CustomImageBlot';
 import './ManageBlog.css';
 import { collection, addDoc, updateDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';

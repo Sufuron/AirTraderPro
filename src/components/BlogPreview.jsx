@@ -1,5 +1,5 @@
 // src/components/BlogPreview.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./BlogPreview.css";
 import { getBlogPosts } from "../utils/firestore";
 
